@@ -58,6 +58,10 @@ class PharmaAgents:
 
         # ADK tool placeholder (may be set up externally); provide a safe CrewAI tool
         def _adk_missing(query: str, molecule: str) -> str:
+            """
+            Placeholder for ADK Regulatory Agent tool when not configured.
+            Raises RuntimeError if called without proper ADK setup.
+            """
             raise RuntimeError("ADK regulatory tool not configured")
 
         # Wrap as a CrewAI tool instance so Agent validation accepts it
@@ -69,6 +73,10 @@ class PharmaAgents:
         else:
             # Create a missing-graph CrewAI tool to satisfy Agent schema
             def _missing_graph(query: str, tool_type: str = "semantic") -> str:
+                """
+                Placeholder for GraphRAG tool when not configured.
+                Raises RuntimeError if called without proper GraphRAGTool setup.
+                """
                 raise RuntimeError("GraphRAGTool not configured")
             self.graph_tool = crew_tool("MissingGraph")(_missing_graph)
 
