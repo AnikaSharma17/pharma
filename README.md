@@ -17,7 +17,7 @@
 - **Environment variables:** Create a `.env` at the repo root (copy from `.env.example`) or export these in your shell:
 
 	  - **`GOOGLE_API_KEY`** (REQUIRED): Google Gemini API key. Get it from: https://makersuite.google.com/app/apikey
-	  - **`GEMINI_MODEL`**: Model name with provider prefix (default: `gemini/gemini-2.0-flash-exp`)
+	  - **`GEMINI_MODEL`**: Model name with provider prefix (default: `gemini/gemini-2.5-flash`)
 	  - **`GEMINI_TEMPERATURE`**: Temperature for LLM generation (default: `0.1`)
 	  - **`NEO4J_URI`**: Neo4j connection URI (default: `bolt://localhost:7687`)
 	  - **`NEO4J_USER`**: Neo4j username (default: `neo4j`)

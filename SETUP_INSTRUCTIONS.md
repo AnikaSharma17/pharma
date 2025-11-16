@@ -35,7 +35,7 @@ GOOGLE_API_KEY=your_google_api_key_here
 
 # Gemini Model Configuration
 # Note: Model name must include 'gemini/' prefix for LiteLLM compatibility (used by CrewAI)
-GEMINI_MODEL=gemini/gemini-2.0-flash-exp
+GEMINI_MODEL=gemini/gemini-2.5-flash
 GEMINI_TEMPERATURE=0.1
 
 # Neo4j Configuration
@@ -134,7 +134,7 @@ curl -X POST "http://127.0.0.1:8000/api/v1/research/run" \
 | Environment Variable | Required | Default | Description |
 |---------------------|----------|---------|-------------|
 | `GOOGLE_API_KEY` | **YES** | None | Google Gemini API key |
-| `GEMINI_MODEL` | No | `gemini/gemini-2.0-flash-exp` | Gemini model name (with provider prefix) |
+| `GEMINI_MODEL` | No | `gemini/gemini-2.5-flash` | Gemini model name (with provider prefix) |
 | `GEMINI_TEMPERATURE` | No | `0.1` | LLM temperature |
 | `NEO4J_URI` | No | `bolt://localhost:7687` | Neo4j connection URI |
 | `NEO4J_USER` | No | `neo4j` | Neo4j username |

@@ -24,7 +24,7 @@ load_dotenv()
 # Note: Model name must include 'gemini/' prefix for LiteLLM compatibility (used by CrewAI)
 try:
     GENERAL_LLM = ChatGoogleGenerativeAI(
-        model=os.getenv("GEMINI_MODEL", "gemini/gemini-2.0-flash-exp"),
+        model=os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash"),
         temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
         google_api_key=os.getenv("GOOGLE_API_KEY")
     )
@@ -55,7 +55,7 @@ try:
     print("Initializing Neo4j service...")
     # Note: Neo4j service uses custom GeminiLLM wrapper (direct Google SDK calls)
     # It needs the model name WITHOUT the 'gemini/' prefix (that's only for LiteLLM)
-    neo4j_llm_model = os.getenv("GEMINI_MODEL", "gemini/gemini-2.0-flash-exp")
+    neo4j_llm_model = os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash")
     if neo4j_llm_model.startswith("gemini/"):
         neo4j_llm_model = neo4j_llm_model[7:]  # Strip 'gemini/' prefix
 
