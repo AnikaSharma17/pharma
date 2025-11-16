@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 
 # Import the necessary components
-from pharma_rag.services.gemini_service import GeminiLLM, GeminiUnavailable
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pharma_rag.services.embeddings import get_embedding_function
 from pharma_rag.agents.master_agent import MasterAgent
 from pharma_rag.utils.pdf_generator import create_pdf_report
@@ -20,50 +20,67 @@ load_dotenv()
 
 # 1. Initialize LLM/Embeddings
 # Use a fast model for general reasoning/tools and a high-quality model for final synthesis
-# Initialize Gemini LLM (direct GenAI client). If unavailable, fail fast with
-# an explanatory message so the user can install the proper GenAI SDK or
-# configure ADC/API keys.
+# Initialize Gemini LLM using LangChain's ChatGoogleGenerativeAI for compatibility with CrewAI
 try:
-    GENERAL_LLM = GeminiLLM(model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"), temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")))
-except GeminiUnavailable as e:
-    print(f"FATAL: Gemini LLM not available: {e}")
+    GENERAL_LLM = ChatGoogleGenerativeAI(
+        model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp"),
+        temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
+        google_api_key=os.getenv("GOOGLE_API_KEY")
+    )
+except Exception as e:
+    print(f"FATAL: Failed to initialize Gemini LLM: {e}")
+    print(f"Please ensure GOOGLE_API_KEY is set in your environment variables.")
     GENERAL_LLM = None
 # Use the project's embedding factory which selects HF/Gemini/OpenAI or None (mock)
 EMBEDDING_MODEL = get_embedding_function()
 
 # 2. Initialize Services
 try:
+    # Check if LLM was initialized successfully
+    if GENERAL_LLM is None:
+        raise ValueError("LLM initialization failed. Cannot proceed with service initialization.")
+
+    print("Initializing services...")
+
     # Use environment variables for credentials
     NEO4J_URI = os.getenv("NEO4J_URI", "bolt://localhost:7687")
     NEO4J_USER = os.getenv("NEO4J_USER", "neo4j")
     NEO4J_PASSWORD = os.getenv("NEO4J_PASSWORD", "password")
     NEO4J_DATABASE = os.getenv("NEO4J_DATABASE", "neo4j")
 
+    print("Initializing ChromaDB service...")
     chroma_service_instance = ChromaService()
-    
+
+    print("Initializing Neo4j service...")
     neo4j_service_instance = Neo4jGraphRAG(
         uri=NEO4J_URI,
         user=NEO4J_USER,
         password=NEO4J_PASSWORD,
         database=NEO4J_DATABASE,
-        llm_model_name="gemini-2.5-flash", 
+        llm_model_name="gemini-2.0-flash-exp",
         embedding_model_name="text-embedding-004"
     )
 
     # 3. Initialize Tool (Dependency Injection)
+    print("Initializing GraphRAG tool...")
     hybrid_rag_tool = GraphRAGTool(
         chroma_service=chroma_service_instance,
         neo4j_service=neo4j_service_instance
     )
-    
+
     # 4. Initialize Master Agent
+    print("Initializing Master Agent...")
     MASTER_AGENT_SERVICE = MasterAgent(
-        llm=GENERAL_LLM, 
+        llm=GENERAL_LLM,
         tools=[hybrid_rag_tool]
     )
 
+    print("✓ All services initialized successfully!")
+
 except Exception as e:
-    print(f"FATAL: Failed to initialize services or LLM: {e}")
+    import traceback
+    print(f"FATAL: Failed to initialize services: {e}")
+    traceback.print_exc()
     MASTER_AGENT_SERVICE = None # Flag that the service failed to start
 
 # --------------------------------------------------------

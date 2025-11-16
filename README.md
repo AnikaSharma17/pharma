@@ -14,40 +14,17 @@
 	pip install -r pharma_rag\requirements.txt
 	```
 
-- **Environment variables:** Create a `.env` in the repo root or export the following before running:
+- **Environment variables:** Create a `.env` at the repo root (copy from `.env.example`) or export these in your shell:
 
-	- `GEMINI_API_KEY` (or `OPENAI_API_KEY`) — LLM embeddings/generation API key
-	````markdown
+	  - **`GOOGLE_API_KEY`** (REQUIRED): Google Gemini API key. Get it from: https://makersuite.google.com/app/apikey
+	  - **`GEMINI_MODEL`**: Model name (default: `gemini-2.0-flash-exp`)
+	  - **`GEMINI_TEMPERATURE`**: Temperature for LLM generation (default: `0.1`)
+	  - **`NEO4J_URI`**: Neo4j connection URI (default: `bolt://localhost:7687`)
+	  - **`NEO4J_USER`**: Neo4j username (default: `neo4j`)
+	  - **`NEO4J_PASSWORD`**: Neo4j password (REQUIRED for production)
+	  - **`NEO4J_DATABASE`**: Neo4j database name (default: `neo4j`)
 
-	**Project Overview**
-
-	- **Name:** `pharma` — an agentic Research Assistant and RAG (Retrieval-Augmented Generation) toolkit focused on pharmaceutical opportunity discovery and repurposing.
-	- **Purpose:** Ingests documents, builds a knowledge graph, provides semantic + structured retrieval, and orchestrates CrewAI agents to synthesize structured reports (PDF output).
-
-	**Quick Start**
-
-	- **Create and activate a venv (Windows PowerShell):**
-
-	  ```powershell
-	  python -m venv .venv
-	  .\.venv\Scripts\Activate.ps1
-	  ```
-
-	- **Install dependencies:**
-
-	  ```powershell
-	  pip install -r pharma_rag\requirements.txt
-	  ```
-
-	- **Environment variables:** Create a `.env` at the repo root (or export these in your shell):
-
-	  - **`GEMINI_API_KEY`**: Google Gemini / GenAI credentials (if using Gemini).  
-	  - **`USE_HF_EMBEDDINGS`**: `true` to prefer local Hugging Face embeddings.  
-	  - **`HF_MODEL_NAME`**: e.g. `sentence-transformers/all-MiniLM-L6-v2` (when using HF embeddings).  
-	  - **`NEO4J_URI`**: e.g. `bolt://localhost:7687`  
-	  - **`NEO4J_USER`** / **`NEO4J_PASSWORD`**: Neo4j credentials  
-
-	  Notes: the app will degrade gracefully if an embedding provider or LLM is not configured (it may run in mock mode). If you see "Your default credentials were not found" for Gemini, configure Google ADC or set `GEMINI_API_KEY` per your provider's docs.
+	  **Important:** The `GOOGLE_API_KEY` environment variable is required for the application to start. Without it, agent services will fail to initialize.
 
 	- **Run the API (development):**
 
@@ -108,10 +85,15 @@
 
 	**Troubleshooting & Common Messages**
 
-	- **`ChromaDB initialized with embedding function.`** — Chroma detected an embedding backend and initialized the vector store successfully.  
-	- **`ChromaDB initialized in mock mode (no embeddings).`** — No embedding function configured; semantic search will return mock results.  
-	- **`Your default credentials were not found`** — Google ADC (Gemini) credentials are missing; set ADC or configure `GEMINI_API_KEY` per your setup.  
-	- **Neo4j connection errors** — check `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` and ensure the DB is running.  
+	- **`Agent services failed to initialize on startup.`** — The most common cause is a missing or invalid `GOOGLE_API_KEY`. Ensure you have:
+	  1. Created a `.env` file in the project root (copy from `.env.example`)
+	  2. Set `GOOGLE_API_KEY=your_actual_api_key` in the `.env` file
+	  3. Restarted the server after setting the environment variable
+	  Check the server logs for the specific error during initialization.
+
+	- **`ChromaDB initialized with embedding function.`** — Chroma detected an embedding backend and initialized the vector store successfully.
+	- **`ChromaDB initialized in mock mode (no embeddings).`** — No embedding function configured; semantic search will return mock results.
+	- **Neo4j connection errors** — check `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` and ensure the DB is running.
 	- **Agent tool validation errors** — Agents expect CrewAI `Tool` instances (not plain functions). The current code wraps instance tools correctly; if you see model validation errors, they typically indicate a mis-wired tool in `agents/`.
 
 	**Development notes & recommended next steps**
