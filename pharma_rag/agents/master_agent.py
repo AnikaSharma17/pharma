@@ -1,5 +1,4 @@
-from crewai import Agent, Crew, Process, Task
-from langchain_google_genai import ChatGoogleGenerativeAI
+from crewai import Agent, Crew, Process, Task, LLM
 from pharma_rag.agents.worker_agents import PharmaAgents
 from pharma_rag.utils.report_schema import FinalReport
 from pharma_rag.tools.graph_rag_tool import GraphRAGTool
@@ -28,7 +27,7 @@ class MyCustomCallback:
 
 
 class MasterAgent:
-    def __init__(self, llm: ChatGoogleGenerativeAI, tools: List[GraphRAGTool]):
+    def __init__(self, llm: LLM, tools: List[GraphRAGTool]):
         self.llm = llm
         # Pass tool instances to PharmaAgents so worker agents can use them
         self.pharma_agents = PharmaAgents(llm, tools=tools)

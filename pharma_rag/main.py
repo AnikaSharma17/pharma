@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 
 # Import the necessary components
-from langchain_google_genai import ChatGoogleGenerativeAI
+from crewai import LLM
 from pharma_rag.services.embeddings import get_embedding_function
 from pharma_rag.agents.master_agent import MasterAgent
 from pharma_rag.utils.pdf_generator import create_pdf_report
@@ -20,19 +20,13 @@ load_dotenv()
 
 # 1. Initialize LLM/Embeddings
 # Use a fast model for general reasoning/tools and a high-quality model for final synthesis
-# Initialize Gemini LLM using LangChain's ChatGoogleGenerativeAI for compatibility with CrewAI
-# Note: ChatGoogleGenerativeAI expects just the model name (e.g., "gemini-2.5-flash")
-# It will format it correctly for LiteLLM internally
+# Initialize Gemini LLM using CrewAI's LLM class (properly handles LiteLLM formatting)
+# Note: For Gemini, the model name should include 'gemini/' prefix (e.g., "gemini/gemini-2.5-flash")
 try:
-    # Get model from env, strip 'gemini/' prefix if present (for ChatGoogleGenerativeAI)
-    model_name = os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash")
-    if model_name.startswith("gemini/"):
-        model_name = model_name[7:]  # Remove 'gemini/' prefix
-
-    GENERAL_LLM = ChatGoogleGenerativeAI(
-        model=model_name,
+    GENERAL_LLM = LLM(
+        model=os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash"),
         temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
-        google_api_key=os.getenv("GOOGLE_API_KEY")
+        api_key=os.getenv("GOOGLE_API_KEY")
     )
 except Exception as e:
     print(f"FATAL: Failed to initialize Gemini LLM: {e}")
