@@ -21,9 +21,10 @@ load_dotenv()
 # 1. Initialize LLM/Embeddings
 # Use a fast model for general reasoning/tools and a high-quality model for final synthesis
 # Initialize Gemini LLM using LangChain's ChatGoogleGenerativeAI for compatibility with CrewAI
+# Note: Model name must include 'gemini/' prefix for LiteLLM compatibility (used by CrewAI)
 try:
     GENERAL_LLM = ChatGoogleGenerativeAI(
-        model=os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp"),
+        model=os.getenv("GEMINI_MODEL", "gemini/gemini-2.0-flash-exp"),
         temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
         google_api_key=os.getenv("GOOGLE_API_KEY")
     )
@@ -57,7 +58,7 @@ try:
         user=NEO4J_USER,
         password=NEO4J_PASSWORD,
         database=NEO4J_DATABASE,
-        llm_model_name="gemini-2.0-flash-exp",
+        llm_model_name="gemini/gemini-2.0-flash-exp",
         embedding_model_name="text-embedding-004"
     )
 
