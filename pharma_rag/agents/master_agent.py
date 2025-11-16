@@ -79,7 +79,7 @@ class MasterAgent:
             agents=[self.master_agent, self.pharma_agents.clinical_patent_agent(), self.pharma_agents.iqvia_exim_agent()], # Add all worker agents here
             tasks=[research_task, synthesis_task],
             process=Process.sequential,
-            verbose=2,
+            verbose=True,  # Changed from verbose=2 for CrewAI compatibility
             callbacks=[logging_callback]
         )
 
