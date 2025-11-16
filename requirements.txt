@@ -1,0 +1,26 @@
+# Core Frameworks
+fastapi
+uvicorn[standard]
+pydantic
+
+# Agentic AI / RAG
+crewai
+crewai-tools # Necessary for custom tools
+langchain
+langchain-openai  # Or langchain-google-genai for Gemini
+langchain_google_genai
+adk
+
+# Vector Database
+chromadb
+
+# Knowledge Graph
+neo4j
+langchain-community # For Neo4j integration and graph utilities
+
+# Data Handling
+pypdf # For document loading
+reportlab # For PDF report generation (or weasyprint, if preferred)
+
+# Environment and Utilities
+python-dotenv
