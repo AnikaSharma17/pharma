@@ -21,10 +21,16 @@ load_dotenv()
 # 1. Initialize LLM/Embeddings
 # Use a fast model for general reasoning/tools and a high-quality model for final synthesis
 # Initialize Gemini LLM using LangChain's ChatGoogleGenerativeAI for compatibility with CrewAI
-# Note: Model name must include 'gemini/' prefix for LiteLLM compatibility (used by CrewAI)
+# Note: ChatGoogleGenerativeAI expects just the model name (e.g., "gemini-2.5-flash")
+# It will format it correctly for LiteLLM internally
 try:
+    # Get model from env, strip 'gemini/' prefix if present (for ChatGoogleGenerativeAI)
+    model_name = os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash")
+    if model_name.startswith("gemini/"):
+        model_name = model_name[7:]  # Remove 'gemini/' prefix
+
     GENERAL_LLM = ChatGoogleGenerativeAI(
-        model=os.getenv("GEMINI_MODEL", "gemini/gemini-2.5-flash"),
+        model=model_name,
         temperature=float(os.getenv("GEMINI_TEMPERATURE", "0.1")),
         google_api_key=os.getenv("GOOGLE_API_KEY")
     )
