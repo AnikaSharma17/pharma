@@ -53,12 +53,18 @@ try:
     chroma_service_instance = ChromaService()
 
     print("Initializing Neo4j service...")
+    # Note: Neo4j service uses custom GeminiLLM wrapper (direct Google SDK calls)
+    # It needs the model name WITHOUT the 'gemini/' prefix (that's only for LiteLLM)
+    neo4j_llm_model = os.getenv("GEMINI_MODEL", "gemini/gemini-2.0-flash-exp")
+    if neo4j_llm_model.startswith("gemini/"):
+        neo4j_llm_model = neo4j_llm_model[7:]  # Strip 'gemini/' prefix
+
     neo4j_service_instance = Neo4jGraphRAG(
         uri=NEO4J_URI,
         user=NEO4J_USER,
         password=NEO4J_PASSWORD,
         database=NEO4J_DATABASE,
-        llm_model_name="gemini/gemini-2.0-flash-exp",
+        llm_model_name=neo4j_llm_model,
         embedding_model_name="text-embedding-004"
     )
 

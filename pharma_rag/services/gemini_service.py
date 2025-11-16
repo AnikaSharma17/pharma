@@ -17,12 +17,16 @@ class GeminiUnavailable(Exception):
 
 
 class GeminiLLM:
-    """Wrapper for calling Google Gemini/GenAI.
+    """Wrapper for calling Google Gemini/GenAI directly (not through LiteLLM).
+
+    IMPORTANT: This wrapper calls Google's SDK directly.
+    Model name should NOT include the 'gemini/' prefix (that's only for LiteLLM).
+    Use just the model name, e.g., 'gemini-2.0-flash-exp', not 'gemini/gemini-2.0-flash-exp'.
 
     Methods:
       - generate(prompt, **kwargs) -> str
     """
-    def __init__(self, model: str = "gemini-2.5-flash", temperature: float = 0.0, api_key: Optional[str] = None):
+    def __init__(self, model: str = "gemini-2.0-flash-exp", temperature: float = 0.0, api_key: Optional[str] = None):
         self.model = model
         self.temperature = temperature
 
